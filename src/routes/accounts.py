@@ -68,6 +68,12 @@ async def register_user(
         )
         user_group = result.scalars().first()
 
+        if user_group is None:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="An error occurred during user creation.",
+            )
+
         user = UserModel.create(
             email=str(user_data.email),
             raw_password=user_data.password,
@@ -401,5 +407,4 @@ async def refresh_access_token(
 
     return {
         "access_token": access_token,
-        "token_type": "bearer",
     }
